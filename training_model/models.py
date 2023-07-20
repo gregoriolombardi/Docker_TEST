@@ -33,6 +33,7 @@ class Document(models.Model):
     storage_type = models.CharField(max_length=255, choices=CHOICES)
     is_trained = models.BooleanField(default=False)
     uploaded_at = models.DateTimeField(auto_now_add=True)
+    character = models.ForeignKey('chatbot.Character', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.file.name

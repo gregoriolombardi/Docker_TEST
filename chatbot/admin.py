@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Conversation, Message
+from .models import Conversation, Message, Character, PreBuildMessage
 
 
 @admin.register(Conversation)
@@ -21,3 +21,21 @@ class MessageAdmin(admin.ModelAdmin):
     list_filter = ('is_from_user', 'conversation__user__username', 'created_at')
     search_fields = ('content',)
     ordering = ('-created_at',)
+
+@admin.register(Character)
+class CharacterAdmin(admin.ModelAdmin):
+    """
+    Admin site configuration for Character model.
+    """
+    list_display = ('id', 'name', 'user', 'created_at', 'updated_at',)
+    list_filter = ('created_at', 'updated_at',)
+    search_fields = ('user__username', 'name',)
+    
+@admin.register(PreBuildMessage)
+class PreBuildMessageAdmin(admin.ModelAdmin):
+    """
+    Admin site configuration for PreBuildMessage model.
+    """
+    list_display = ('id', 'content', 'is_active', 'created_at', 'updated_at',)
+    list_filter = ('created_at', 'updated_at',)
+    search_fields = ('content',)

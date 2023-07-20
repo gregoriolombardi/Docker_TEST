@@ -8,6 +8,25 @@ def generate_secure_random_id():
     max_value = 10 ** 11 - 1  # Maximum value of the range (exclusive)
     return secrets.randbelow(max_value - min_value) + min_value
 
+class  Character(models.Model):
+    """
+    Character model representing a character within a conversation.
+    """
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255, default="Empty")
+    created_at = models.DateTimeField(auto_now_add=True)
+    prompt = models.TextField(blank=True, null=True)
+    avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    url_image = models.URLField(blank=True, null=True)
+    prebuild_messages = models.ManyToManyField('PreBuildMessage', blank=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Character {self.id} - {self.prompt}"
+
 
 class Conversation(models.Model):
     """
@@ -26,6 +45,7 @@ class Conversation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     favourite = models.BooleanField(default=False)
     archive = models.BooleanField(default=False)
+    character = models.ForeignKey(Character, on_delete=models.CASCADE, null=True, blank=True)
 
     # status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='active')
 
@@ -51,3 +71,19 @@ class Message(models.Model):
 
     def __str__(self):
         return f"Message {self.id} - {self.conversation}"
+
+class PreBuildMessage(models.Model):
+    """
+    Message model representing prebuild message to use in a conversation.
+    """
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Prebuild Message {self.content}"
+

@@ -9,6 +9,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from .models import Document
 from .pinecone_helpers import build_or_update_pinecone_index
+from .serializers import DocumentSerializer
 
 User = get_user_model()
 
@@ -54,3 +55,9 @@ class TrainView(View):
         messages.success(request, "Training complete.")
         admin_url = reverse('admin:training_model_document_change', args=[object_id])
         return HttpResponseRedirect(admin_url)
+
+class DocumentView(View):
+    serializer_class = DocumentSerializer
+    
+    def get(self, request, object_id):
+        return None

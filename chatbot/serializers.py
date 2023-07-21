@@ -1,8 +1,8 @@
 from rest_framework import serializers
 
 from .models import Conversation, Message
-from .utils import time_since
-
+from django.utils.translation import gettext as _
+from django.template.defaultfilters import timesince
 
 class MessageSerializer(serializers.ModelSerializer):
     """
@@ -17,7 +17,7 @@ class MessageSerializer(serializers.ModelSerializer):
         
 
     def get_created_at(self, obj):
-        return time_since(obj.created_at)
+        return ("{time} atrás").format(time=timesince(obj.created_at))
     
     
 class ConversationSerializer(serializers.ModelSerializer):
@@ -34,7 +34,8 @@ class ConversationSerializer(serializers.ModelSerializer):
         fields = ['id', 'title', 'favourite', 'archive', 'created_at', 'messages','character','prebuild_messages']
 
     def get_created_at(self, obj):
-        return time_since(obj.created_at)
+         return _("{time} atrás").format(time=timesince(obj.created_at))
+     
     def get_character(self, obj):
         try:
             return obj.character.url_image if obj.character.url_image else None
